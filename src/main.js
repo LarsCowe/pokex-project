@@ -1,15 +1,13 @@
 'use strict';
 
+// Globale variabele om alle Pokémon bij te houden
+let allPokemon = [];
+
 // Een lijst met Pokémon ophalen
 async function fetchPokemon() {
   try {
-    // Ophalen van eerste 10 Pokémon (minder om te beginnen)
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10');
-
-    if (!response.ok) {
-      throw new Error(`API fout: ${response.status}`);
-    }
-
+    // Ophalen van eerste 20 Pokémon
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
     const data = await response.json();
 
     // Voor elke Pokémon de details ophalen
@@ -18,10 +16,13 @@ async function fetchPokemon() {
     );
 
     // Wachten tot alle details zijn opgehaald
-    const pokemonDetails = await Promise.all(pokemonDetailsPromises);
+    allPokemon = await Promise.all(pokemonDetailsPromises);
 
     // De gedetailleerde resultaten tonen
-    displayPokemonDetails(pokemonDetails);
+    displayPokemonDetails(allPokemon);
+
+    // Zoekfunctie instellen
+    setupSearch();
   } catch (error) {
     console.error('Fout bij het ophalen van Pokémon:', error);
   }
@@ -49,6 +50,23 @@ function displayPokemonDetails(pokemonList) {
 
     // Toevoegen aan de container
     container.appendChild(card);
+  });
+}
+
+// Zoekfunctie instellen
+function setupSearch() {
+  const searchInput = document.getElementById('search-input');
+
+  searchInput.addEventListener('input', () => {
+    const searchTerm = searchInput.value.toLowerCase();
+
+    // Filteren van Pokémon op naam
+    const filteredPokemon = allPokemon.filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(searchTerm)
+    );
+
+    // Gefilterde resultaten tonen
+    displayPokemonDetails(filteredPokemon);
   });
 }
 
