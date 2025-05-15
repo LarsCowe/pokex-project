@@ -28,6 +28,64 @@ async function fetchPokemon() {
   }
 }
 
+// Controleren of een Pokémon een favoriet is
+function checkFavorite(id) {
+  const favorites = getFavorites();
+  return favorites.includes(id);
+}
+
+// Alle favorieten ophalen uit localStorage
+function getFavorites() {
+  try {
+    const favoritesJson = localStorage.getItem('pokex_favorites');
+    return favoritesJson ? JSON.parse(favoritesJson) : [];
+  } catch (error) {
+    console.error('Fout bij toegang tot localStorage:', error);
+    return [];
+  }
+}
+
+// Favoriet status omschakelen
+function toggleFavorite(event) {
+  // Voorkom dat de klik doorgaat naar de kaart
+  event.stopPropagation();
+
+  // Haal het Pokémon ID uit de knop
+  const id = parseInt(event.currentTarget.dataset.id);
+
+  // Haal huidige favorieten op
+  let favorites = getFavorites();
+
+  // Check of deze Pokémon al een favoriet is
+  const index = favorites.indexOf(id);
+
+  if (index !== -1) {
+    // Verwijderen uit favorieten als het al een favoriet is
+    favorites.splice(index, 1);
+    event.currentTarget.textContent = '🤍';
+    console.log(`Pokémon ${id} verwijderd uit favorieten`);
+  } else {
+    // Toevoegen aan favorieten als het nog geen favoriet is
+    favorites.push(id);
+    event.currentTarget.textContent = '❤️';
+    console.log(`Pokémon ${id} toegevoegd aan favorieten`);
+  }
+
+  // Opslaan in localStorage
+  localStorage.setItem('pokex_favorites', JSON.stringify(favorites));
+}
+
+// Event listeners voor favoriet knoppen instellen
+function setupFavoriteButtons() {
+  // Selecteer alle favoriete knoppen
+  const favoriteButtons = document.querySelectorAll('.favorite-btn');
+
+  // Voor elke knop een event listener toevoegen
+  favoriteButtons.forEach((button) => {
+    button.addEventListener('click', toggleFavorite);
+  });
+}
+
 // Gedetailleerde Pokémon info weergeven
 function displayPokemonDetails(pokemonList) {
   const container = document.getElementById('pokemon-list');
@@ -39,6 +97,9 @@ function displayPokemonDetails(pokemonList) {
     const card = document.createElement('div');
     card.classList.add('pokemon-card');
 
+    // Check of deze Pokémon een favoriet is
+    const isFavorite = checkFavorite(pokemon.id);
+
     // HTML voor de kaart met meer details
     card.innerHTML = `
       <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
@@ -46,11 +107,17 @@ function displayPokemonDetails(pokemonList) {
       <p>Type: ${pokemon.types.map((type) => type.type.name).join(', ')}</p>
       <p>Gewicht: ${pokemon.weight / 10} kg</p>
       <p>Hoogte: ${pokemon.height / 10} m</p>
+      <button class="favorite-btn" data-id="${pokemon.id}">
+        ${isFavorite ? '❤️' : '🤍'}
+      </button>
     `;
 
     // Toevoegen aan de container
     container.appendChild(card);
   });
+
+  // Event listeners voor favoriet knoppen toevoegen
+  setupFavoriteButtons();
 }
 
 // Zoekfunctie instellen

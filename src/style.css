@@ -25,9 +25,23 @@ header {
   padding: 15px;
   border-radius: 5px;
   width: 200px;
+  position: relative; /* Voor de favorietenknop */
 }
 
 .pokemon-card img {
   width: 100%;
   height: auto;
+}
+
+.favorite-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.2s;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.2);
 }
