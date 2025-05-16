@@ -22,6 +22,7 @@ async function fetchPokemon() {
     // UI updaten met de opgehaalde gegevens
     displayPokemonDetails(allPokemon);
     setupSearch();
+    setupSorting();
   } catch (error) {
     console.error('Fout bij het ophalen van Pokémon:', error);
     const container = document.getElementById('pokemon-list');
@@ -313,6 +314,53 @@ function setupModalCloseEvents() {
   });
 }
 
+// ===== SORTEERFUNCTIE =====
+function setupSorting() {
+  const sortSelect = document.getElementById('sort-select');
+
+  sortSelect.addEventListener('change', () => {
+    const sortOption = sortSelect.value;
+    const searchInput = document.getElementById('search-input');
+    const searchTerm = searchInput.value.toLowerCase();
+
+    // Filter eerst op zoekopdracht als die er is
+    let pokemonToDisplay = allPokemon;
+    if (searchTerm) {
+      pokemonToDisplay = allPokemon.filter((pokemon) =>
+        pokemon.name.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    // Dan sorteren op basis van geselecteerde optie
+    switch (sortOption) {
+      case 'name-asc':
+        pokemonToDisplay.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'name-desc':
+        pokemonToDisplay.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case 'weight-asc':
+        pokemonToDisplay.sort((a, b) => a.weight - b.weight);
+        break;
+      case 'weight-desc':
+        pokemonToDisplay.sort((a, b) => b.weight - a.weight);
+        break;
+      case 'height-asc':
+        pokemonToDisplay.sort((a, b) => a.height - b.height);
+        break;
+      case 'height-desc':
+        pokemonToDisplay.sort((a, b) => b.height - a.height);
+        break;
+      default:
+        // Standaard sortering (ID volgorde)
+        pokemonToDisplay.sort((a, b) => a.id - b.id);
+    }
+
+    // Toon de gesorteerde Pokémon
+    displayPokemonDetails(pokemonToDisplay);
+  });
+}
+
 // ===== ZOEKFUNCTIE =====
 function setupSearch() {
   const searchInput = document.getElementById('search-input');
@@ -320,11 +368,22 @@ function setupSearch() {
   searchInput.addEventListener('input', () => {
     const searchTerm = searchInput.value.toLowerCase();
 
-    // Filter Pokémon op naam en toon resultaten
+    // Filter Pokémon op naam
     const filteredPokemon = allPokemon.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(searchTerm)
     );
 
+    // Pas huidige sortering toe op de gefilterde resultaten
+    const sortSelect = document.getElementById('sort-select');
+    const sortOption = sortSelect.value;
+
+    if (sortOption !== 'default') {
+      // Trigger de sorteerfunctie met huidige waarde
+      sortSelect.dispatchEvent(new Event('change'));
+      return;
+    }
+
+    // Toon de gefilterde Pokémon als er geen sortering is
     displayPokemonDetails(filteredPokemon);
   });
 }
@@ -333,4 +392,5 @@ function setupSearch() {
 document.addEventListener('DOMContentLoaded', () => {
   fetchPokemon();
   setupModalCloseEvents();
+  setupSorting();
 });
