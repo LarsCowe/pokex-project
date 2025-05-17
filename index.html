@@ -9,7 +9,6 @@
   <body>
     <header>
       <h1>Pokex</h1>
-
       <div class="search-container">
         <input type="text" id="search-input" placeholder="Zoek Pokémon..." />
         <div class="sort-container">
@@ -21,6 +20,12 @@
             <option value="weight-desc">Gewicht (aflopend)</option>
             <option value="height-asc">Hoogte (oplopend)</option>
             <option value="height-desc">Hoogte (aflopend)</option>
+          </select>
+        </div>
+        <div class="filter-container">
+          <select id="type-filter">
+            <option value="all">Alle types</option>
+            <!-- Type opties worden dynamisch toegevoegd -->
           </select>
         </div>
       </div>
