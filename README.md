@@ -118,9 +118,15 @@ PokéX is een Pokémon-verkenner gebouwd met vanilla JavaScript, gebruikmakend v
 - [PokéAPI Documentatie](https://pokeapi.co/docs/v2)
 - [MDN Web Docs - JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 - [MDN Web Docs - Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
+- [W3Schools - Modals](https://www.w3schools.com/howto/howto_css_modals.asp )
 - [W3Schools - LocalStorage](https://www.w3schools.com/jsref/prop_win_localstorage.asp)
 
 ### AI Gebruik
+
+- https://chatgpt.com/share/6829d22e-c4b8-8001-9844-7723aab6de18 - Observer API
+- https://chatgpt.com/share/6829d35f-0e5c-8001-a66d-ae973d4de6ae - Filteren en sorteren
+
+Bij problemen tijdens het coderen heb ik gebruik gemaakt van Github Copilot.
 
 ## Auteur
 
