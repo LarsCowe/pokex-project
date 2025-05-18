@@ -104,7 +104,7 @@ PokéX is een Pokémon-verkenner gebouwd met vanilla JavaScript, gebruikmakend v
    npm run dev
    ```
 
-4. Open je browser en navigeer naar de URL die in de terminal wordt weergegeven (meestal http://localhost:5173/)
+4. Open je browser en navigeer naar de URL die in de terminal wordt weergegeven
 
 ## Screenshots
 
