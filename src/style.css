@@ -1,3 +1,4 @@
+/* ===== BASIS STIJLEN ===== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -10,17 +11,24 @@ body {
   padding: 20px;
 }
 
+/* ===== HEADER ===== */
 header {
   margin-bottom: 20px;
+  text-align: center;
 }
 
-/* ===== ZOEKEN EN SORTEREN ===== */
+h1 {
+  margin-bottom: 15px;
+}
+
+/* ===== ZOEK & FILTER BESTURING ===== */
 .search-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin: 15px 0;
-  gap: 10px;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 #search-input {
@@ -29,14 +37,36 @@ header {
   max-width: 300px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  text-align: center;
 }
 
 .sort-container {
   min-width: 200px;
+  text-align: center;
 }
 
 .filter-container {
   min-width: 150px;
+  text-align: center;
+}
+
+.favorites-container {
+  min-width: 120px;
+  text-align: center;
+}
+
+#favorites-toggle {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#favorites-toggle.active {
+  background-color: #ffcb05;
+  color: #333;
 }
 
 #sort-select,
@@ -55,20 +85,21 @@ header {
   border-color: #a0a0a0;
 }
 
-/* ===== POKEMON KAARTEN ===== */
+/* ===== POKÉMON KAARTEN GRID ===== */
 #pokemon-list {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .pokemon-card {
   border: 1px solid #ddd;
   padding: 15px;
+  text-align: center;
   border-radius: 5px;
   width: 200px;
-  position: relative; /* Voor favoriet knop */
+  position: relative;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -81,11 +112,14 @@ header {
 .pokemon-card img {
   width: 100%;
   height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
 .pokemon-card h3 {
   margin: 10px 0;
   text-transform: capitalize;
+  text-align: center;
 }
 
 .favorite-btn {
@@ -94,6 +128,9 @@ header {
   font-size: 24px;
   cursor: pointer;
   margin-top: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ===== MODAL STIJLEN ===== */
@@ -137,6 +174,7 @@ header {
 .detail-header {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: 15px;
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
@@ -171,12 +209,14 @@ header {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
 .detail-stats,
 .detail-abilities {
   flex: 1;
   min-width: 250px;
+  text-align: center;
 }
 
 .detail-types {
@@ -194,7 +234,7 @@ header {
   font-weight: bold;
 }
 
-/* Pokémon type kleuren */
+/* ===== POKÉMON TYPE KLEUREN ===== */
 .normal {
   background-color: #a8a878;
 }
@@ -250,10 +290,12 @@ header {
   background-color: #f0b6bc;
 }
 
+/* ===== STATISTIEKEN & VAARDIGHEDEN ===== */
 .stat {
   margin-bottom: 10px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 10px;
 }
 
 .stat-name {
@@ -271,11 +313,14 @@ header {
   border-bottom: 1px solid #f0f0f0;
   padding-bottom: 5px;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .detail-abilities ul {
-  padding-left: 20px;
+  padding-left: 0;
   margin-bottom: 15px;
+  list-style-position: inside;
+  text-align: center;
 }
 
 .detail-abilities li {
@@ -285,8 +330,10 @@ header {
 
 .pokemon-dimensions {
   margin-top: 15px;
+  text-align: center;
 }
 
+/* ===== RESPONSIEF ONTWERP ===== */
 @media (max-width: 768px) {
   .modal-content {
     margin: 10% auto;

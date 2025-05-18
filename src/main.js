@@ -1,29 +1,26 @@
 'use strict';
 
-// ===== DATA & API FUNCTIES =====
+/* ===== DATA & API FUNCTIES ===== */
 
-// Globale variabele om alle Pokémon bij te houden
 let allPokemon = [];
 
-// Een lijst met Pokémon ophalen
 async function fetchPokemon() {
   try {
-    // Ophalen van eerste 20 Pokémon
     const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
     const data = await response.json();
 
-    // Voor elke Pokémon de details ophalen en wachten tot alles binnen is
     const pokemonPromises = data.results.map((pokemon) =>
       fetch(pokemon.url).then((res) => res.json())
     );
-
     allPokemon = await Promise.all(pokemonPromises);
 
-    // UI updaten met de opgehaalde gegevens
+    allPokemon.sort((a, b) => a.id - b.id);
+
     displayPokemonDetails(allPokemon);
     setupSearch();
     setupSorting();
     setupTypeFilter();
+    setupFavoritesToggle();
   } catch (error) {
     console.error('Fout bij het ophalen van Pokémon:', error);
     const container = document.getElementById('pokemon-list');
@@ -34,7 +31,6 @@ async function fetchPokemon() {
   }
 }
 
-// Extra Pokémon gegevens ophalen (soort informatie)
 async function fetchSpeciesData(url) {
   try {
     const response = await fetch(url);
@@ -45,13 +41,13 @@ async function fetchSpeciesData(url) {
   }
 }
 
-// ===== FAVORIETEN FUNCTIES =====
+/* ===== FAVORIETEN FUNCTIONALITEIT ===== */
+
 function checkFavorite(id) {
   const favorites = getFavorites();
   return favorites.includes(id);
 }
 
-// Alle favorieten ophalen uit localStorage
 function getFavorites() {
   try {
     const favoritesJson = localStorage.getItem('pokex_favorites');
@@ -62,7 +58,6 @@ function getFavorites() {
   }
 }
 
-// Favoriet status omschakelen
 function toggleFavorite(event) {
   event.stopPropagation();
 
@@ -71,40 +66,36 @@ function toggleFavorite(event) {
   const index = favorites.indexOf(id);
 
   if (index !== -1) {
-    // Verwijderen uit favorieten
     favorites.splice(index, 1);
     event.currentTarget.textContent = '🤍';
   } else {
-    // Toevoegen aan favorieten
     favorites.push(id);
     event.currentTarget.textContent = '❤️';
   }
-
   localStorage.setItem('pokex_favorites', JSON.stringify(favorites));
+
+  applyFilters();
 }
 
-// Event listeners voor favoriet knoppen instellen
 function setupFavoriteButtons() {
   document.querySelectorAll('.favorite-btn').forEach((button) => {
     button.addEventListener('click', toggleFavorite);
   });
 }
 
-// ===== UI WEERGAVE FUNCTIES =====
+/* ===== UI WEERGAVE FUNCTIES ===== */
+
 function displayPokemonDetails(pokemonList) {
   const container = document.getElementById('pokemon-list');
   container.innerHTML = '';
 
   pokemonList.forEach((pokemon) => {
-    // Kaart maken en eigenschappen instellen
     const card = document.createElement('div');
     card.classList.add('pokemon-card');
     card.dataset.id = pokemon.id;
 
-    // Favoriet status bepalen
     const isFavorite = checkFavorite(pokemon.id);
 
-    // HTML voor de kaart genereren
     card.innerHTML = `
       <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
       <h3>${pokemon.name}</h3>
@@ -119,16 +110,13 @@ function displayPokemonDetails(pokemonList) {
     container.appendChild(card);
   });
 
-  // Event listeners instellen
   setupFavoriteButtons();
   setupCardClickHandlers();
 }
 
-// Event listeners instellen voor klikken op Pokemon kaarten
 function setupCardClickHandlers() {
   document.querySelectorAll('.pokemon-card').forEach((card) => {
     card.addEventListener('click', (event) => {
-      // Negeer klikken op de favoriet knop
       if (
         event.target.classList.contains('favorite-btn') ||
         event.target.closest('.favorite-btn')
@@ -142,7 +130,6 @@ function setupCardClickHandlers() {
   });
 }
 
-// Toon gedetailleerde Pokemon informatie in een modal
 async function showPokemonDetail(pokemonId) {
   const pokemon = allPokemon.find((p) => p.id === pokemonId);
   if (!pokemon) {
@@ -150,16 +137,13 @@ async function showPokemonDetail(pokemonId) {
     return;
   }
 
-  // Modal voorbereiden
   const modal = document.getElementById('detail-modal');
   const modalContent = document.getElementById('pokemon-detail');
   modal.style.display = 'block';
 
   try {
-    // Opbouw van alle detail secties
     let detailHTML = createBasicPokemonInfo(pokemon);
 
-    // Species data ophalen en toevoegen
     try {
       const speciesData = await fetchSpeciesData(pokemon.species.url);
       if (speciesData) {
@@ -169,16 +153,13 @@ async function showPokemonDetail(pokemonId) {
       console.log('Extra species informatie kon niet worden geladen');
     }
 
-    // HTML afsluiten en tonen
     detailHTML += `</div></div>`;
     modalContent.innerHTML = detailHTML;
   } catch (error) {
-    // Fallback bij fouten
     showErrorInfo(modalContent, pokemon);
   }
 }
 
-// Basis Pokémon info HTML genereren
 function createBasicPokemonInfo(pokemon) {
   return `
     <div class="detail-header">
@@ -237,11 +218,9 @@ function createBasicPokemonInfo(pokemon) {
   `;
 }
 
-// Extra soort informatie toevoegen
 function createSpeciesInfo(speciesData) {
   let html = '';
 
-  // Beschrijving toevoegen indien beschikbaar
   const description = speciesData.flavor_text_entries
     ? speciesData.flavor_text_entries
         .find((entry) => entry.language.name === 'en')
@@ -255,7 +234,6 @@ function createSpeciesInfo(speciesData) {
     `;
   }
 
-  // Habitat en generatie toevoegen indien beschikbaar
   if (speciesData.habitat) {
     html += `<p><strong>Habitat:</strong> ${speciesData.habitat.name}</p>`;
   }
@@ -269,7 +247,6 @@ function createSpeciesInfo(speciesData) {
   return html;
 }
 
-// Foutinfo tonen wanneer iets misgaat
 function showErrorInfo(container, pokemon) {
   container.innerHTML = `
     <h2>${pokemon.name}</h2>
@@ -283,21 +260,16 @@ function showErrorInfo(container, pokemon) {
     </div>  `;
 }
 
-// Functie om de modal te sluiten
 function closeModal() {
   const modal = document.getElementById('detail-modal');
   modal.style.display = 'none';
 }
 
-// Setup modal close events
 function setupModalCloseEvents() {
-  // Sluit knop
   const closeButton = document.querySelector('.close-btn');
   if (closeButton) {
     closeButton.addEventListener('click', closeModal);
   }
-
-  // Klik buiten de modal content
   const modal = document.getElementById('detail-modal');
   if (modal) {
     modal.addEventListener('click', (event) => {
@@ -307,7 +279,6 @@ function setupModalCloseEvents() {
     });
   }
 
-  // Escape toets
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       closeModal();
@@ -315,36 +286,32 @@ function setupModalCloseEvents() {
   });
 }
 
-// ===== SORTEERFUNCTIE =====
+/* ===== FILTER & SORTEER FUNCTIES ===== */
+
 function setupSorting() {
   const sortSelect = document.getElementById('sort-select');
   sortSelect.addEventListener('change', applyFilters);
 }
 
-// ===== ZOEKFUNCTIE =====
 function setupSearch() {
   const searchInput = document.getElementById('search-input');
   searchInput.addEventListener('input', applyFilters);
 }
 
-// ===== TYPE FILTER FUNCTIE =====
 function setupTypeFilter() {
   const typeFilter = document.getElementById('type-filter');
   const uniqueTypes = getUniqueTypes();
 
-  // Dropdown vullen met unieke types
   uniqueTypes.forEach((type) => {
     const option = document.createElement('option');
     option.value = type;
-    option.textContent = type.charAt(0).toUpperCase() + type.slice(1); // Eerste letter hoofdletter
+    option.textContent = type.charAt(0).toUpperCase() + type.slice(1);
     typeFilter.appendChild(option);
   });
 
-  // Event listener voor type filter
   typeFilter.addEventListener('change', applyFilters);
 }
 
-// Alle unieke types uit de Pokémon lijst halen
 function getUniqueTypes() {
   const allTypes = [];
 
@@ -356,67 +323,89 @@ function getUniqueTypes() {
     });
   });
 
-  return allTypes.sort(); // Alfabetisch sorteren
+  return allTypes.sort();
 }
 
-// Combineer alle filters (zoeken, sorteren en type)
 function applyFilters() {
   const searchInput = document.getElementById('search-input');
   const searchTerm = searchInput.value.toLowerCase();
   const typeFilter = document.getElementById('type-filter');
   const selectedType = typeFilter.value;
+  const favoritesButton = document.getElementById('favorites-toggle');
 
   let filteredPokemon = allPokemon;
 
-  // Filter op zoekterm (naam)
   if (searchTerm) {
     filteredPokemon = filteredPokemon.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(searchTerm)
     );
   }
 
-  // Filter op type (als er een type is geselecteerd)
   if (selectedType !== 'all') {
     filteredPokemon = filteredPokemon.filter((pokemon) =>
       pokemon.types.some((typeInfo) => typeInfo.type.name === selectedType)
     );
   }
 
-  // Pas sortering toe
+  if (favoritesButton.classList.contains('active')) {
+    filteredPokemon = filteredPokemon.filter((pokemon) =>
+      checkFavorite(pokemon.id)
+    );
+  }
+
   const sortSelect = document.getElementById('sort-select');
   const sortOption = sortSelect.value;
 
-  if (sortOption !== 'default') {
-    switch (sortOption) {
-      case 'name-asc':
-        filteredPokemon.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'name-desc':
-        filteredPokemon.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case 'weight-asc':
-        filteredPokemon.sort((a, b) => a.weight - b.weight);
-        break;
-      case 'weight-desc':
-        filteredPokemon.sort((a, b) => b.weight - a.weight);
-        break;
-      case 'height-asc':
-        filteredPokemon.sort((a, b) => a.height - b.height);
-        break;
-      case 'height-desc':
-        filteredPokemon.sort((a, b) => b.height - a.height);
-        break;
-      default:
-        filteredPokemon.sort((a, b) => a.id - b.id);
-    }
+  switch (sortOption) {
+    case 'name-asc':
+      filteredPokemon.sort((a, b) => a.name.localeCompare(b.name));
+      break;
+    case 'name-desc':
+      filteredPokemon.sort((a, b) => b.name.localeCompare(a.name));
+      break;
+    case 'weight-asc':
+      filteredPokemon.sort((a, b) => a.weight - b.weight);
+      break;
+    case 'weight-desc':
+      filteredPokemon.sort((a, b) => b.weight - a.weight);
+      break;
+    case 'height-asc':
+      filteredPokemon.sort((a, b) => a.height - b.height);
+      break;
+    case 'height-desc':
+      filteredPokemon.sort((a, b) => b.height - a.height);
+      break;
+    default:
+      filteredPokemon.sort((a, b) => a.id - b.id);
   }
 
-  // Toon de gefilterde en gesorteerde Pokémon
   displayPokemonDetails(filteredPokemon);
 }
 
-// ===== APPLICATIE STARTEN =====
+/* ===== APPLICATIE INITIALISATIE ===== */
+
 document.addEventListener('DOMContentLoaded', () => {
   fetchPokemon();
   setupModalCloseEvents();
+  setupFavoritesToggle();
 });
+
+/* ===== FAVORIETEN FILTER FUNCTIONALITEIT ===== */
+
+function setupFavoritesToggle() {
+  const favoritesButton = document.getElementById('favorites-toggle');
+  favoritesButton.addEventListener('click', toggleFavoritesFilter);
+}
+
+function toggleFavoritesFilter() {
+  const favoritesButton = document.getElementById('favorites-toggle');
+  favoritesButton.classList.toggle('active');
+
+  if (favoritesButton.classList.contains('active')) {
+    favoritesButton.textContent = 'Toon alle';
+  } else {
+    favoritesButton.textContent = 'Toon favorieten';
+  }
+
+  applyFilters();
+}
