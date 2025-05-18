@@ -6,7 +6,7 @@ let allPokemon = [];
 
 async function fetchPokemon() {
   try {
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50');
     const data = await response.json();
 
     const pokemonPromises = data.results.map((pokemon) =>
@@ -409,3 +409,30 @@ function toggleFavoritesFilter() {
 
   applyFilters();
 }
+
+/* ===== OBSERVER API FUNCTIONALITEIT ===== */
+
+function setupCardObserver() {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  document.querySelectorAll('.pokemon-card').forEach((card) => {
+    observer.observe(card);
+  });
+}
+
+const originalDisplayFunction = displayPokemonDetails;
+displayPokemonDetails = function (pokemonList) {
+  originalDisplayFunction(pokemonList);
+
+  setupCardObserver();
+};

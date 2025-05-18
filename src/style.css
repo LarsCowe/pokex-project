@@ -101,7 +101,12 @@ h1 {
   width: 200px;
   position: relative;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.5s;
+  opacity: 0; /* Begin onzichtbaar */
+}
+
+.pokemon-card.visible {
+  opacity: 1; /* Zichtbaar wanneer de 'visible' class wordt toegevoegd */
 }
 
 .pokemon-card:hover {
