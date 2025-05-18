@@ -108,6 +108,11 @@ PokéX is een Pokémon-verkenner gebouwd met vanilla JavaScript, gebruikmakend v
 
 ## Screenshots
 
+![image](https://github.com/user-attachments/assets/240b01de-3377-4557-bb55-0de37f421395)
+![image](https://github.com/user-attachments/assets/9d607084-b4ed-4284-a427-bec7fa92781d)
+
+
+
 ## Gebruikte Bronnen
 
 - [PokéAPI Documentatie](https://pokeapi.co/docs/v2)
