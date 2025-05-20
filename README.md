@@ -1,10 +1,10 @@
-# PokéX Project
+# Pokex Project
 
 Een dynamische, interactieve single-page webapplicatie waarmee gebruikers Pokémon kunnen verkennen, filteren, sorteren en opslaan in hun persoonlijke collectie.
 
 ## Projectbeschrijving
 
-PokéX is een Pokémon-verkenner gebouwd met vanilla JavaScript, gebruikmakend van de publieke [PokéAPI](https://pokeapi.co/). De applicatie stelt gebruikers in staat om:
+Pokex is een Pokémon-verkenner gebouwd met vanilla JavaScript, gebruikmakend van de publieke [PokéAPI](https://pokeapi.co/). De applicatie stelt gebruikers in staat om:
 
 - Door Pokémon te bladeren met gedetailleerde informatie
 - Specifieke Pokémon te zoeken op naam
