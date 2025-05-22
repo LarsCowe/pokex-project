@@ -388,6 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchPokemon();
   setupModalCloseEvents();
   setupFavoritesToggle();
+  setupThemeToggle();
 });
 
 /* ===== FAVORIETEN FILTER FUNCTIONALITEIT ===== */
@@ -436,3 +437,30 @@ displayPokemonDetails = function (pokemonList) {
 
   setupCardObserver();
 };
+
+/* ===== DARK THEME FUNCTIONALITEIT ===== */
+
+function setupThemeToggle() {
+  const themeToggle = document.getElementById('theme-toggle');
+
+  if (localStorage.getItem('pokex_theme') === 'dark') {
+    document.body.classList.add('dark-theme');
+    themeToggle.textContent = '☀️';
+  }
+
+  themeToggle.addEventListener('click', toggleTheme);
+}
+
+function toggleTheme() {
+  const themeToggle = document.getElementById('theme-toggle');
+
+  if (document.body.classList.contains('dark-theme')) {
+    document.body.classList.remove('dark-theme');
+    localStorage.setItem('pokex_theme', 'light');
+    themeToggle.textContent = '🌙';
+  } else {
+    document.body.classList.add('dark-theme');
+    localStorage.setItem('pokex_theme', 'dark');
+    themeToggle.textContent = '☀️';
+  }
+}

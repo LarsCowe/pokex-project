@@ -1,14 +1,47 @@
 /* ===== BASIS STIJLEN ===== */
+:root {
+  --background-color: #fff;
+  --text-color: #333;
+  --card-bg-color: #fff;
+  --card-border-color: #ddd;
+  --modal-bg-color: #fff;
+  --input-bg-color: #fff;
+  --input-border-color: #ddd;
+  --hover-shadow: rgba(0, 0, 0, 0.1);
+  --close-btn-color: #aaa;
+  --close-btn-hover: #000;
+  --header-border: #eee;
+  --abilities-border: #f0f0f0;
+}
+
+.dark-theme {
+  --background-color: #222;
+  --text-color: #e0e0e0;
+  --card-bg-color: #333;
+  --card-border-color: #444;
+  --modal-bg-color: #333;
+  --input-bg-color: #444;
+  --input-border-color: #555;
+  --hover-shadow: rgba(0, 0, 0, 0.5);
+  --close-btn-color: #888;
+  --close-btn-hover: #fff;
+  --header-border: #444;
+  --abilities-border: #444;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
   padding: 20px;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 /* ===== HEADER ===== */
@@ -35,9 +68,11 @@ h1 {
   padding: 8px;
   width: 100%;
   max-width: 300px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border-color);
   border-radius: 4px;
   text-align: center;
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
 }
 
 .sort-container {
@@ -55,13 +90,19 @@ h1 {
   text-align: center;
 }
 
+.theme-container {
+  min-width: 40px;
+  text-align: center;
+}
+
 #favorites-toggle {
   padding: 8px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border-color);
   border-radius: 4px;
-  background-color: white;
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 #favorites-toggle.active {
@@ -69,12 +110,24 @@ h1 {
   color: #333;
 }
 
+#theme-toggle {
+  padding: 8px 12px;
+  border: 1px solid var(--input-border-color);
+  border-radius: 4px;
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 16px;
+}
+
 #sort-select,
 #type-filter {
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border-color);
   border-radius: 4px;
-  background-color: white;
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
   cursor: pointer;
   width: 100%;
 }
@@ -94,7 +147,8 @@ h1 {
 }
 
 .pokemon-card {
-  border: 1px solid #ddd;
+  border: 1px solid var(--card-border-color);
+  background-color: var(--card-bg-color);
   padding: 15px;
   text-align: center;
   border-radius: 5px;
@@ -102,16 +156,16 @@ h1 {
   position: relative;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, opacity 0.5s;
-  opacity: 0; /* Begin onzichtbaar */
+  opacity: 0;
 }
 
 .pokemon-card.visible {
-  opacity: 1; /* Zichtbaar wanneer de 'visible' class wordt toegevoegd */
+  opacity: 1;
 }
 
 .pokemon-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--hover-shadow);
 }
 
 .pokemon-card img {
@@ -152,7 +206,7 @@ h1 {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--modal-bg-color);
   margin: 5% auto;
   padding: 20px;
   width: 90%;
@@ -163,7 +217,7 @@ h1 {
 }
 
 .close-btn {
-  color: #aaa;
+  color: var(--close-btn-color);
   position: absolute;
   top: 10px;
   right: 15px;
@@ -173,7 +227,7 @@ h1 {
 }
 
 .close-btn:hover {
-  color: black;
+  color: var(--close-btn-hover);
 }
 
 .detail-header {
@@ -181,7 +235,7 @@ h1 {
   align-items: center;
   justify-content: center;
   margin-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--header-border);
   padding-bottom: 10px;
 }
 
@@ -315,7 +369,7 @@ h1 {
 .detail-abilities h3,
 .detail-stats h3 {
   margin-top: 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--abilities-border);
   padding-bottom: 5px;
   margin-bottom: 10px;
   text-align: center;
