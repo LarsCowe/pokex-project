@@ -4,6 +4,7 @@
 
 let allPokemon = [];
 
+// Haalt Pokémon data op van de API en initialiseert de applicatie
 async function fetchPokemon() {
   try {
     const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50');
@@ -31,6 +32,7 @@ async function fetchPokemon() {
   }
 }
 
+// Haalt extra soorteninformatie op voor een Pokémon
 async function fetchSpeciesData(url) {
   try {
     const response = await fetch(url);
@@ -43,11 +45,13 @@ async function fetchSpeciesData(url) {
 
 /* ===== FAVORIETEN FUNCTIONALITEIT ===== */
 
+// Controleert of een Pokémon in favorieten staat
 function checkFavorite(id) {
   const favorites = getFavorites();
   return favorites.includes(id);
 }
 
+// Haalt favoriete Pokémon op uit localStorage
 function getFavorites() {
   try {
     const favoritesJson = localStorage.getItem('pokex_favorites');
@@ -58,13 +62,13 @@ function getFavorites() {
   }
 }
 
+// Voegt Pokémon toe aan favorieten of verwijdert deze
 function toggleFavorite(event) {
   event.stopPropagation();
 
   const id = parseInt(event.currentTarget.dataset.id);
   let favorites = getFavorites();
   const index = favorites.indexOf(id);
-
   if (index !== -1) {
     favorites.splice(index, 1);
     event.currentTarget.textContent = '🤍';
@@ -77,6 +81,7 @@ function toggleFavorite(event) {
   applyFilters();
 }
 
+// Initialiseert klikgedrag voor alle favorieten knoppen
 function setupFavoriteButtons() {
   document.querySelectorAll('.favorite-btn').forEach((button) => {
     button.addEventListener('click', toggleFavorite);
@@ -85,6 +90,7 @@ function setupFavoriteButtons() {
 
 /* ===== UI WEERGAVE FUNCTIES ===== */
 
+// Toont Pokémon kaarten in het overzicht
 function displayPokemonDetails(pokemonList) {
   const container = document.getElementById('pokemon-list');
   container.innerHTML = '';
@@ -95,7 +101,6 @@ function displayPokemonDetails(pokemonList) {
     card.dataset.id = pokemon.id;
 
     const isFavorite = checkFavorite(pokemon.id);
-
     card.innerHTML = `
       <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
       <h3>${pokemon.name}</h3>
@@ -114,6 +119,7 @@ function displayPokemonDetails(pokemonList) {
   setupCardClickHandlers();
 }
 
+// Voegt klikfunctionaliteit toe aan Pokémon kaarten
 function setupCardClickHandlers() {
   document.querySelectorAll('.pokemon-card').forEach((card) => {
     card.addEventListener('click', (event) => {
@@ -130,13 +136,13 @@ function setupCardClickHandlers() {
   });
 }
 
+// Toont gedetailleerde informatie van een Pokémon in een modal
 async function showPokemonDetail(pokemonId) {
   const pokemon = allPokemon.find((p) => p.id === pokemonId);
   if (!pokemon) {
     console.error('Pokemon niet gevonden:', pokemonId);
     return;
   }
-
   const modal = document.getElementById('detail-modal');
   const modalContent = document.getElementById('pokemon-detail');
   modal.style.display = 'block';
@@ -160,6 +166,7 @@ async function showPokemonDetail(pokemonId) {
   }
 }
 
+// Genereert HTML voor basis informatie van een Pokémon
 function createBasicPokemonInfo(pokemon) {
   return `
     <div class="detail-header">
@@ -218,6 +225,7 @@ function createBasicPokemonInfo(pokemon) {
   `;
 }
 
+// Genereert HTML voor aanvullende soortinformatie van een Pokémon
 function createSpeciesInfo(speciesData) {
   let html = '';
 
@@ -247,6 +255,7 @@ function createSpeciesInfo(speciesData) {
   return html;
 }
 
+// Toont basis informatie wanneer gedetailleerde data niet beschikbaar is
 function showErrorInfo(container, pokemon) {
   container.innerHTML = `
     <h2>${pokemon.name}</h2>
@@ -260,11 +269,13 @@ function showErrorInfo(container, pokemon) {
     </div>  `;
 }
 
+// Sluit de detail modal
 function closeModal() {
   const modal = document.getElementById('detail-modal');
   modal.style.display = 'none';
 }
 
+// Stelt verschillende manieren in om de modal te sluiten
 function setupModalCloseEvents() {
   const closeButton = document.querySelector('.close-btn');
   if (closeButton) {
@@ -288,16 +299,19 @@ function setupModalCloseEvents() {
 
 /* ===== FILTER & SORTEER FUNCTIES ===== */
 
+// Initialiseert de sorteerfunctionaliteit
 function setupSorting() {
   const sortSelect = document.getElementById('sort-select');
   sortSelect.addEventListener('change', applyFilters);
 }
 
+// Initialiseert de zoekfunctionaliteit
 function setupSearch() {
   const searchInput = document.getElementById('search-input');
   searchInput.addEventListener('input', applyFilters);
 }
 
+// Initialiseert type filter met alle beschikbare Pokémon types
 function setupTypeFilter() {
   const typeFilter = document.getElementById('type-filter');
   const uniqueTypes = getUniqueTypes();
@@ -312,6 +326,7 @@ function setupTypeFilter() {
   typeFilter.addEventListener('change', applyFilters);
 }
 
+// Verzamelt unieke Pokémon types uit de dataset
 function getUniqueTypes() {
   const allTypes = [];
 
@@ -326,6 +341,7 @@ function getUniqueTypes() {
   return allTypes.sort();
 }
 
+// Past alle filters en sortering toe op de Pokémon lijst
 function applyFilters() {
   const searchInput = document.getElementById('search-input');
   const searchTerm = searchInput.value.toLowerCase();
@@ -334,19 +350,20 @@ function applyFilters() {
   const favoritesButton = document.getElementById('favorites-toggle');
 
   let filteredPokemon = allPokemon;
-
   if (searchTerm) {
     filteredPokemon = filteredPokemon.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(searchTerm)
     );
   }
 
+  // Filter op Pokémon type
   if (selectedType !== 'all') {
     filteredPokemon = filteredPokemon.filter((pokemon) =>
       pokemon.types.some((typeInfo) => typeInfo.type.name === selectedType)
     );
   }
 
+  // Filter op favorieten status
   if (favoritesButton.classList.contains('active')) {
     filteredPokemon = filteredPokemon.filter((pokemon) =>
       checkFavorite(pokemon.id)
@@ -356,6 +373,7 @@ function applyFilters() {
   const sortSelect = document.getElementById('sort-select');
   const sortOption = sortSelect.value;
 
+  // Sorteer volgens gekozen sorteeroptie
   switch (sortOption) {
     case 'name-asc':
       filteredPokemon.sort((a, b) => a.name.localeCompare(b.name));
@@ -393,11 +411,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ===== FAVORIETEN FILTER FUNCTIONALITEIT ===== */
 
+// Initialiseert de favorieten filter knop
 function setupFavoritesToggle() {
   const favoritesButton = document.getElementById('favorites-toggle');
   favoritesButton.addEventListener('click', toggleFavoritesFilter);
 }
 
+// Schakelt tussen tonen van alle Pokémon of alleen favorieten
 function toggleFavoritesFilter() {
   const favoritesButton = document.getElementById('favorites-toggle');
   favoritesButton.classList.toggle('active');
@@ -413,6 +433,7 @@ function toggleFavoritesFilter() {
 
 /* ===== OBSERVER API FUNCTIONALITEIT ===== */
 
+// Voegt animatie toe aan Pokémon kaarten wanneer ze in beeld komen
 function setupCardObserver() {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -431,6 +452,7 @@ function setupCardObserver() {
   });
 }
 
+// Breidt displayPokemonDetails functie uit met animatie
 const originalDisplayFunction = displayPokemonDetails;
 displayPokemonDetails = function (pokemonList) {
   originalDisplayFunction(pokemonList);
@@ -441,6 +463,7 @@ displayPokemonDetails = function (pokemonList) {
 /* ===== DARK THEME FUNCTIONALITEIT ===== */
 
 function setupThemeToggle() {
+  // Initialiseert de thema schakelaar (light/dark mode)
   const themeToggle = document.getElementById('theme-toggle');
 
   if (localStorage.getItem('pokex_theme') === 'dark') {
@@ -451,6 +474,7 @@ function setupThemeToggle() {
   themeToggle.addEventListener('click', toggleTheme);
 }
 
+// Wisselt tussen licht en donker thema
 function toggleTheme() {
   const themeToggle = document.getElementById('theme-toggle');
 

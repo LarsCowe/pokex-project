@@ -160,7 +160,7 @@ h1 {
 }
 
 .pokemon-card.visible {
-  opacity: 1;
+  opacity: 1; /* Wordt zichtbaar door IntersectionObserver */
 }
 
 .pokemon-card:hover {
