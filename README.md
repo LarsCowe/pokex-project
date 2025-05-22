@@ -125,6 +125,7 @@ Pokex is een Pokémon-verkenner gebouwd met vanilla JavaScript, gebruikmakend va
 
 - https://chatgpt.com/share/6829d22e-c4b8-8001-9844-7723aab6de18 - Observer API
 - https://chatgpt.com/share/6829d35f-0e5c-8001-a66d-ae973d4de6ae - Filteren en sorteren
+- Design READme
 
 Bij problemen tijdens het coderen heb ik gebruik gemaakt van Github Copilot.
 
